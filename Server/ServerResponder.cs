@@ -28,8 +28,10 @@ namespace Beastmon2.Server
                 string info = ComputerInfo.Info.SerializeToJSON();
                 byte[] infoBytes = Encoding.UTF8.GetBytes(info);
 
-                context.Response.ContentType = "application/json; charset=utf8";
+                context.Response.ContentType = "application/json; charset=utf-8";
                 context.Response.ContentLength64 = infoBytes.Length;
+
+                context.Response.AddHeader("Cache-Control", "no-store");
 
                 try
                 {
@@ -54,7 +56,7 @@ namespace Beastmon2.Server
                     byte[] buffer = new byte[stream.Length];
                     stream.Read(buffer, 0, buffer.Length);
 
-                    context.Response.ContentType = "text/html; charset=utf8";
+                    context.Response.ContentType = "text/html; charset=utf-8";
                     context.Response.ContentLength64 = buffer.Length;
 
                     try
