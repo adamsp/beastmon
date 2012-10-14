@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
     <title>Beastmon</title>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script type="text/javascript">
@@ -23,16 +24,19 @@
                 $(selector).addClass('green-progress');
             }
         }
+		
+		function TimeString() {
+		    var currentTime = new Date();
+            var hours = currentTime.getHours();
+            var minutes = currentTime.getMinutes();
+            if (minutes < 10){
+                minutes = "0" + minutes;
+            }
+			var time = '<span class="ui-label">' + hours + ':' + minutes + '</span><br />';
+			return time;
+		}
 
         function CPUTemplateString(id) {
-            ram = "";
-            if (id == 0) {
-                ram = '<div id="ram" class="ui-progress-bar ui-container">' +
-                '<span class="ui-label"></span>' +
-                '<div class="ui-progress green-progress" style="width: 79%;"></div>' +
-                '</div>';
-            }
-
             cpuTemplate = '<div id="cpu' + id + '">' +
             '<div class="avgcoreload ui-progress-bar ui-container">' +
             '<span class="ui-label"></span>' +
@@ -42,13 +46,19 @@
             '<span class="ui-label"></span>' +
             '<div class="ui-progress green-progress" style="width: 79%;"></div>' +
             '</div>' +
-            '<div class="maxcoretemp ui-progress-bar ui-container">' +
-            '<span class="ui-label"></span>' +
-            '<div class="ui-progress green-progress" style="width: 79%;"></div>' +
-            '</div>' + ram + '</div><br />';
+			'</div><br />';
 
             return cpuTemplate;
         }
+		
+		function RAMTemplateString() {
+		    ram = '<div id="ram" class="ui-progress-bar ui-container">' +
+            '<span class="ui-label"></span>' +
+            '<div class="ui-progress green-progress" style="width: 79%;"></div>' +
+            '</div><br />';
+			
+		    return ram;	
+		}
 
         function GPUTemplateString(id) {
             gpuTemplate = '<div id="gpu' + id + '">' +
@@ -72,11 +82,10 @@
                 contentType: "application/json",
                 dataType: "json",
                 success: function (data, textStatus, jqXHR) {
-                    cpuText = "CPU: ";
-                    if (data.CPUs.length > 1) {
-                        cpuText = "CPUs: ";
-                    }
-                    $("#cpus").text(cpuText);
+				    $("#time").text("");
+					$("#time").append(TimeString());
+
+                    $("#cpus").text("");
 
                     for (cpuIndex in data.CPUs) {
                         $("#cpus").append(CPUTemplateString(cpuIndex));
@@ -91,7 +100,7 @@
 
                         $(cpuSelector + " .avgcoreload .ui-progress").width(totalLoad + '%');
                         changeProgressColour(cpuSelector + " .avgcoreload .ui-progress", totalLoad);
-                        $(cpuSelector + " .avgcoreload .ui-label").text('Load: ' + totalLoad.toFixed(0) + '%');
+                        $(cpuSelector + " .avgcoreload .ui-label").text('CPU Load: ' + totalLoad.toFixed(0) + '%');
 
                         var avgTemp = 0;
                         var maxTemp = 0;
@@ -105,19 +114,10 @@
                         var avgCoreTempPct = (avgTemp / data.CPUs[cpuIndex].TjMax) * 100;
                         $(cpuSelector + " .avgcoretemp .ui-progress").width(avgCoreTempPct + '%');
                         changeProgressColour(cpuSelector + " .avgcoretemp .ui-progress", avgCoreTempPct);
-                        $(cpuSelector + " .avgcoretemp .ui-label").html('Average Temp: ' + avgTemp.toFixed(0) + ' &deg;C');
-
-                        var maxCoreTempPct = (data.CPUs[cpuIndex].CPUTempHighest / data.CPUs[cpuIndex].TjMax) * 100;
-                        $(cpuSelector + " .maxcoretemp .ui-progress").width(maxCoreTempPct + '%');
-                        changeProgressColour(cpuSelector + " .maxcoretemp .ui-progress", maxCoreTempPct);
-                        $(cpuSelector + " .maxcoretemp .ui-label").html('Highest Temp: ' + data.CPUs[cpuIndex].CPUTempHighest.toFixed(0) + ' &deg;C');
+                        $(cpuSelector + " .avgcoretemp .ui-label").html('Avg Core Temp: ' + avgTemp.toFixed(0) + ' &deg;C (Max ' + data.CPUs[cpuIndex].CPUTempHighest.toFixed(0) + ' &deg;C' + ')');
                     }
 
-                    gpuText = "GPU: ";
-                    if (data.GPUs.length > 1) {
-                        gpuText = "GPUs: ";
-                    }
-                    $("#gpus").text(gpuText);
+                    $("#gpus").text("");
 
                     for (gpuIndex in data.GPUs) {
                         $("#gpus").append(GPUTemplateString(gpuIndex));
@@ -126,13 +126,16 @@
 
                         $(gpuSelector + " .load .ui-progress").width(data.GPUs[gpuIndex].GPULoad + '%');
                         changeProgressColour(gpuSelector + " .load .ui-progress", data.GPUs[gpuIndex].GPULoad);
-                        $(gpuSelector + " .load .ui-label").text('Load: ' + data.GPUs[gpuIndex].GPULoad + ' %');
+                        $(gpuSelector + " .load .ui-label").text('GPU Load: ' + data.GPUs[gpuIndex].GPULoad + ' %');
 
                         var gpuTempPct = (data.GPUs[gpuIndex].GPUTemp / data.GPUs[gpuIndex].GPUTempMax) * 100;
                         $(gpuSelector + " .temp .ui-progress").width(gpuTempPct + '%');
                         changeProgressColour(gpuSelector + " .temp .ui-progress", gpuTempPct);
-                        $(gpuSelector + " .temp .ui-label").html('Temp: ' + data.GPUs[gpuIndex].GPUTemp + ' &deg;C');
+                        $(gpuSelector + " .temp .ui-label").html('GPU Temp: ' + data.GPUs[gpuIndex].GPUTemp + ' &deg;C');
                     }
+					
+					$("#ramOuter").text("");
+					$("#ramOuter").append(RAMTemplateString());
 
                     var ramPct = ((data.RAM.TotalMemory - data.RAM.FreeMemory) / data.RAM.TotalMemory) * 100;
                     $("#ram .ui-progress").width(ramPct + '%');
@@ -160,8 +163,9 @@
         {
             margin: 0px;
             padding: 5px;
-            width: 470px;
-            height: 300px;
+            width: 400px;
+            height: 190px;
+			overflow: hidden;
             font-family: 'Helvetica Neue' , Helvetica, Arial, sans-serif;
             background: rgb(206,220,231); /* Old browsers */
             background: -moz-linear-gradient(-45deg,  rgba(206,220,231,1) 0%, rgba(89,106,114,1) 100%); /* FF3.6+ */
@@ -308,7 +312,9 @@
     </style>
 </head>
 <body>
+    <div id="time"></div>
     <div id="cpus"></div>
+	<div id="ramOuter"></div>
     <div id="gpus"></div>
 </body>
 </html>

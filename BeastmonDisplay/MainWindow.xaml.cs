@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Beastmon2;
 
 namespace BeastmonDisplay
 {
@@ -21,6 +22,7 @@ namespace BeastmonDisplay
     {
         public MainWindow()
         {
+            Beastmon.Start();
             InitializeComponent();
             browser.Navigate("http://localhost:5300");
         }
