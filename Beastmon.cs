@@ -12,10 +12,10 @@ namespace Beastmon2
     public static class Beastmon
     {
         private static Server.ServerBase server;
-        static void Main(string[] args)
-        {
-            Start();
-        }
+        //static void Main(string[] args)
+        //{
+        //    Start();
+        //}
 
         public static void Start()
         {
