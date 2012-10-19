@@ -16,14 +16,17 @@ namespace Beastmon2.Server
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX buffer);
 
+        private static bool running;
+
         public static void Monitor() 
         {
+            running = true;
             UpdateVisitor updateVisitor = new UpdateVisitor();
             Computer computer = new Computer();
 
             computer.Open();
 
-            while (true)
+            while (running)
             {
                 computer.Accept(updateVisitor);
                 MonitoringInfo currentInfo = new MonitoringInfo();
@@ -69,6 +72,11 @@ namespace Beastmon2.Server
 
                 Thread.Sleep(1000);
             }
+        }
+
+        public static void Stop()
+        {
+            running = false;
         }
 
         private static void AddGPUInfo(ISensor[] sensors, GPU gpu)

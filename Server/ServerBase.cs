@@ -10,24 +10,40 @@ namespace Beastmon2.Server
     class ServerBase
     {
         Thread monitoringThread;
+        private static bool running;
+
+        private HttpListener listener;
 
         public ServerBase()
         {
            this.monitoringThread = new Thread(ComputerInfo.Monitor);
            this.monitoringThread.Start();
+           this.listener = new HttpListener();
         }
 
         public void Listen()
         {
-            HttpListener listener = new HttpListener();
+            running = true;
             listener.Prefixes.Add("http://*:5300/");
             listener.Start();
-
-            while (true)
+            try
             {
-                HttpListenerContext context = listener.GetContext();
-                new Thread(new ServerResponder(context).ProcessRequest).Start();
+                while (running)
+                {
+                    HttpListenerContext context = listener.GetContext();
+                    new Thread(new ServerResponder(context).ProcessRequest).Start();
+                }
             }
+            catch (Exception) { }
+            
+            listener.Close();
+            ComputerInfo.Stop();
+        }
+
+        public void Stop()
+        {
+            running = false;
+            listener.Stop();
         }
     }
 }

@@ -25,6 +25,12 @@ namespace BeastmonDisplay
             Beastmon.Start();
             InitializeComponent();
             browser.Navigate("http://localhost:5300");
+            Closed += new EventHandler(MainWindow_Closed);
+        }
+
+        void MainWindow_Closed(object sender, EventArgs e)
+        {
+            Beastmon.Stop();
         }
     }
 }

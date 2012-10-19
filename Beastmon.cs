@@ -28,5 +28,10 @@ namespace Beastmon2
                     });
             }
         }
+
+        public static void Stop()
+        {
+            if(null != server) server.Stop();
+        }
     }
 }
