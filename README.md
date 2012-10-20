@@ -1,6 +1,6 @@
 Beastmon system monitor
 ============
-![Beastmon](https://github.com/adamsp/beastmon/raw/master/ss01.png)
+![Beastmon](https://github.com/adamsp/beastmon/raw/master/ss01.PNG)
 
 I'd seen the system monitor that okonk was working on and I thought it looked pretty sweet (his intent was that you could use it to monitor your PC remotely, ie from a smartphone). I'd been using the HWMonitor program from the CPUID people, but that didn't save window location or state (well, the standalone version I was using didn't), and took up a bunch of screen real estate and showed me stuff I didn't really care about. So I forked this one and hacked up a wee desktop version that shows me only the information I want to see, and saves its location. Convenient.
 
