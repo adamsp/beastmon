@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Beastmon2;
+using System.Windows.Interop;
+using Beastmon2.Properties;
+using System.ComponentModel;
 
-namespace BeastmonDisplay
+namespace Beastmon2
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -31,6 +24,20 @@ namespace BeastmonDisplay
         void MainWindow_Closed(object sender, EventArgs e)
         {
             Beastmon.Stop();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            Settings.Default.MainWindowPlacement = this.GetPlacement();
+            Settings.Default.Save();
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            this.SetPlacement(Settings.Default.MainWindowPlacement);
         }
     }
 }

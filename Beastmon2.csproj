@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Beastmon2</RootNamespace>
-    <AssemblyName>Beastmon2</AssemblyName>
+    <AssemblyName>Beastmon</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -149,11 +149,17 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Server\ComputerInfo.cs" />
     <Compile Include="Server\MonitoringInfo.cs" />
     <Compile Include="Server\ServerBase.cs" />
     <Compile Include="Server\ServerResponder.cs" />
     <Compile Include="UpdateVisitor.cs" />
+    <Compile Include="WindowPlacement.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Hardware\WinRing0.sys" />
@@ -162,10 +168,16 @@
     <EmbeddedResource Include="Hardware\WinRing0x64.sys" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Content.html">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
